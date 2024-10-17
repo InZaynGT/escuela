@@ -51,9 +51,10 @@ Route::put('/asocia/{id}', [gradoController::class, 'update'])->name('asocia.upd
 
 //CREACIÓN DE ESTUDIANTES
 
-Route::get('/estudiantes', [estudiantesController::class, 'index'])->name('estudiantes.index');
 Route::post('/estudiantes', [estudiantesController::class, 'store'])->name('estudiantes.store');
 Route::put('/estudiantes/{id}', [estudiantesController::class, 'update'])->name('estudiantes.update');
+Route::get('/estudiantes', [estudiantesController::class, 'estudiantes'])->name('estudiantes');
+Route::get('/estudiantes/listado/{gradoSeccionId}', [estudiantesController::class, 'listadoEstudiantes'])->name('listadoEstudiantes');
 
 //PROFESORES
 Route::get('/profesores', [ProfesoresController::class, 'index'])->name('profesores.index');

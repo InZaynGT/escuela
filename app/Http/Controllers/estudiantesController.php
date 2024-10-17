@@ -25,7 +25,7 @@ class estudiantesController extends Controller
             )
             ->orderBy('estudiantes.apellidos')
             ->get();
-            
+
         $grados = DB::table('grado_seccion')
             ->join('grados', 'grado_seccion.grado', '=', 'grados.id')
             ->join('seccion', 'grado_seccion.seccion', '=', 'seccion.id')
@@ -34,6 +34,48 @@ class estudiantesController extends Controller
                 DB::raw("CONCAT(grados.nombre, ' ', seccion.nombre) as nombre")
             )->get();
         return view('estudiantes.index', compact('estudiantes', 'grados'));
+    }
+
+    // Método para mostrar los grados y secciones en cards
+    public function estudiantes()
+    {
+        // Obtener los grados, secciones y el conteo de estudiantes
+        $gradoSecciones = DB::table('grado_seccion')
+            ->join('grados', 'grado_seccion.grado', '=', 'grados.id')
+            ->join('seccion', 'grado_seccion.seccion', '=', 'seccion.id')
+            ->leftJoin('estudiantes', 'grado_seccion.id', '=', 'estudiantes.grado') // JOIN para contar estudiantes
+            ->select(
+                'grados.nombre as grado_nombre',
+                'grado_seccion.id',
+                DB::raw("CONCAT(grados.nombre, ' ', seccion.nombre) as grado_seccion"),
+                DB::raw('COUNT(estudiantes.id) as total_estudiantes') // Contar estudiantes
+            )
+            ->groupBy('grados.id', 'grado_seccion.id', 'grado_seccion.grado') // Agrupar por grado y sección
+            ->get();
+
+        // Retornar la vista de estudiantes (cards)
+        return view('estudiantes.estudiantes', compact('gradoSecciones'));
+    }
+
+
+    // Método para mostrar los estudiantes filtrados por grado y sección
+    public function listadoEstudiantes($gradoSeccionId)
+    {
+        // Obtener los estudiantes según el grado_seccion_id
+        $estudiantes = DB::table('estudiantes')
+            ->where('grado', $gradoSeccionId)
+            ->get();
+
+        // Obtener información del grado y sección seleccionado
+        $gradoSeccion = DB::table('grado_seccion')
+            ->join('grados', 'grado_seccion.grado', '=', 'grados.id')
+            ->join('seccion', 'grado_seccion.seccion', '=', 'seccion.id')
+            ->select(DB::raw("CONCAT(grados.nombre, ' ', seccion.nombre) as grado_seccion"))
+            ->where('grado_seccion.id', $gradoSeccionId)
+            ->first();
+
+        // Retornar la vista con los estudiantes filtrados
+        return view('estudiantes.listadoEstudiantes', compact('estudiantes', 'gradoSeccion'));
     }
 
     public function store(Request $request)
