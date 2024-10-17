@@ -358,12 +358,6 @@ return [
                     'icon_color' => 'info', // Icono de color azul claro
                 ],
                 [
-                    'text' => 'Asignar Estudiantes',
-                    'url'  => 'asigna_estudiantes',
-                    'icon' => 'fas fa-clipboard-list',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
                     'text' => 'Asignar Profesores',
                     'url'  => 'asigna_profesores',
                     'icon' => 'fas fa-book-open',

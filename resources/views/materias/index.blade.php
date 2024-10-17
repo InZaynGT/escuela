@@ -35,6 +35,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
+                    <th>Grado y Sección</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -43,12 +44,12 @@
                     <tr>
                         <td>{{ $materia->id }}</td>
                         <td>{{ $materia->nombre }}</td>
+                        <td>{{ $materia->grado }}</td>
                         <td>
                             <!-- Botón para editar materia -->
                             <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editMateriaModal{{ $materia->id }}">
                                 <i class="fas fa-edit"></i> Editar
                             </button>
-
                         </td>
                     </tr>
 
@@ -101,6 +102,15 @@
                         <label for="nombre">Nombre</label>
                         <input type="text" name="nombre" class="form-control" required>
                     </div>
+                </div>
+                <div class="modal-body">
+                    <label for="grado_seccion">Grado y Sección</label>
+                    <select name="grado_id" class="form-control" required>
+                        <option value="">Seleccionar Grado</option>
+                        @foreach($grados as $grado)
+                            <option value="{{ $grado->id }}">{{ $grado->nombre }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

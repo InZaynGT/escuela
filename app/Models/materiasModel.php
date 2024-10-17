@@ -9,5 +9,5 @@ class materiasModel extends Model
 {
     use HasFactory;
     protected $table = 'materia';
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre','ID_GRADO_SECCION'];
 }

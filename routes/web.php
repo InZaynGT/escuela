@@ -6,6 +6,7 @@ use App\Http\Controllers\materiasController;
 use App\Http\Controllers\gradoController;
 use App\Http\Controllers\gradoSeccionController;
 use App\Http\Controllers\seccionController;
+use App\Http\Controllers\profesoresController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +54,8 @@ Route::put('/asocia/{id}', [gradoController::class, 'update'])->name('asocia.upd
 Route::get('/estudiantes', [estudiantesController::class, 'index'])->name('estudiantes.index');
 Route::post('/estudiantes', [estudiantesController::class, 'store'])->name('estudiantes.store');
 Route::put('/estudiantes/{id}', [estudiantesController::class, 'update'])->name('estudiantes.update');
+
+//PROFESORES
+Route::get('/profesores', [ProfesoresController::class, 'index'])->name('profesores.index');
+Route::post('/profesores', [ProfesoresController::class, 'store'])->name('profesores.store');
+Route::put('/profesores/{id}', [ProfesoresController::class, 'update'])->name('profesores.update');

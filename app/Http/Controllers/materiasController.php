@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\materiasModel;
+use Illuminate\Support\Facades\DB;
 
 class materiasController extends Controller
 {
@@ -11,8 +12,26 @@ class materiasController extends Controller
     public function index()
     {
         // Obtener todas las materias
-        $materias = materiasModel::all();
-        return view('materias.index', compact('materias'));
+        $materias = DB::table('materia')
+        ->join('grado_seccion', 'materia.ID_GRADO_SECCION', '=', 'grado_seccion.id')
+        ->join('grados', 'grado_seccion.grado', '=', 'grados.id')
+        ->join('seccion', 'grado_seccion.seccion', '=', 'seccion.id')
+        ->select(
+            'materia.id',
+            'grado_seccion.id',
+            'materia.nombre',
+            DB::raw("CONCAT(grados.nombre, ' ', seccion.nombre) as grado")
+        )
+        ->orderBy('grado_seccion.id')
+        ->get();
+        $grados = DB::table('grado_seccion')
+            ->join('grados', 'grado_seccion.grado', '=', 'grados.id')
+            ->join('seccion', 'grado_seccion.seccion', '=', 'seccion.id')
+            ->select(
+                'grado_seccion.id',
+                DB::raw("CONCAT(grados.nombre, ' ', seccion.nombre) as nombre")
+            )->get();
+        return view('materias.index', compact('materias', 'grados'));
     }
 
     // Guardar una nueva materia
@@ -20,10 +39,12 @@ class materiasController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'grado_id' => 'required|integer',
         ]);
 
         materiasModel::create([
             'nombre' => $request->input('nombre'),
+            'ID_GRADO_SECCION' => $request->input('grado_id'),
         ]);
 
         return redirect()->route('materias.index')->with('success', 'Materia agregada exitosamente.');
