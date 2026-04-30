@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'EORM',
     'title_prefix' => '',
-    'title_postfix' => '',
+    'title_postfix' => ' | EORM',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>Tareas',
-    'logo_img' => 'vendor/adminlte/dist/img/portapapeles.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<b>LAS</b> EORM',
+    'logo_img' => '',
+    'logo_img_class' => '',
     'logo_img_xl' => null,
-    'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_xl_class' => '',
+    'logo_img_alt' => 'EORM',
 
     /*
     |--------------------------------------------------------------------------
@@ -110,15 +110,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
-        'mode' => 'fullscreen',
-        'img' => [
-            'logo_img' => 'vendor/adminlte/dist/img/portapapeles.png',
-            'alt' => 'AdminLTE Preloader Image',
-            'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
-        ],
+        'enabled' => false,
     ],
 
     /*
@@ -171,12 +163,12 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-primary',
+    'classes_auth_card' => 'card-outline card-secondary',
     'classes_auth_header' => '',
     'classes_auth_body' => '',
-    'classes_auth_footer' => '',
+    'classes_auth_footer' => 'text-center',
     'classes_auth_icon' => '',
-    'classes_auth_btn' => 'btn-flat btn-primary',
+    'classes_auth_btn' => 'btn-flat btn-dark',
 
     /*
     |--------------------------------------------------------------------------
@@ -190,17 +182,17 @@ return [
     |
     */
 
-    'classes_body' => '',
-    'classes_brand' => '',
+    'classes_body' => 'sidebar-mini',
+    'classes_brand' => 'bg-dark',
     'classes_brand_text' => '',
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_sidebar' => 'sidebar-dark-secondary elevation-2',
+    'classes_sidebar_nav' => 'nav-flat nav-compact',
+    'classes_topnav' => 'navbar-dark bg-dark',
     'classes_topnav_nav' => 'navbar-expand',
-    'classes_topnav_container' => 'container',
+    'classes_topnav_container' => 'container-fluid',
 
     /*
     |--------------------------------------------------------------------------
@@ -281,6 +273,11 @@ return [
     'laravel_mix_css_path' => 'css/app.css',
     'laravel_mix_js_path' => 'js/app.js',
 
+    'extra_assets' => [
+        'css' => ['css/custom.css'],
+        'js'  => [],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Menu Items
@@ -294,107 +291,96 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
+        // ── ADMINISTRADOR ────────────────────────────────────────────
+        ['header' => 'ADMINISTRACIÓN', 'can' => 'admin'],
         [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
+            'text' => 'Inicio',
+            'url'  => 'admin/dashboard',
+            'icon' => 'fas fa-home',
+            'can'  => 'admin',
         ],
         [
-            'type' => 'fullscreen-widget',
-            'topnav_right' => true,
+            'text'    => 'Académico',
+            'icon'    => 'fas fa-graduation-cap',
+            'can'     => 'admin',
+            'submenu' => [
+                ['text' => 'Grados y Secciones', 'url' => 'admin/grado-seccion', 'icon' => 'fas fa-school'],
+                ['text' => 'Grados',              'url' => 'admin/grados',        'icon' => 'fas fa-layer-group'],
+                ['text' => 'Secciones',           'url' => 'admin/secciones',     'icon' => 'fas fa-list'],
+                ['text' => 'Materias',            'url' => 'admin/materias',      'icon' => 'fas fa-book'],
+                ['text' => 'Periodos',            'url' => 'admin/periodos',      'icon' => 'fas fa-calendar-alt'],
+            ],
+        ],
+        [
+            'text'    => 'Estudiantes',
+            'icon'    => 'fas fa-user-graduate',
+            'can'     => 'admin',
+            'submenu' => [
+                ['text' => 'Listado',      'url' => 'admin/estudiantes',        'icon' => 'fas fa-users'],
+                ['text' => 'Registrar',    'url' => 'admin/estudiantes/create', 'icon' => 'fas fa-user-plus'],
+                ['text' => 'Responsables', 'url' => 'admin/responsables',       'icon' => 'fas fa-user-friends'],
+            ],
+        ],
+        [
+            'text'    => 'Docentes',
+            'icon'    => 'fas fa-chalkboard-teacher',
+            'can'     => 'admin',
+            'submenu' => [
+                ['text' => 'Listado',   'url' => 'admin/profesores',        'icon' => 'fas fa-users'],
+                ['text' => 'Registrar', 'url' => 'admin/profesores/create', 'icon' => 'fas fa-user-plus'],
+            ],
+        ],
+        [
+            'text'    => 'Reportes',
+            'icon'    => 'fas fa-file-alt',
+            'can'     => 'admin',
+            'submenu' => [
+                ['text' => 'Listado por Grado/Sección', 'url' => 'admin/reportes/grado-seccion', 'icon' => 'fas fa-list-alt'],
+                ['text' => 'Boleta de Notas',           'url' => 'admin/reportes/boletas',        'icon' => 'fas fa-file-invoice'],
+                ['text' => 'Asistencia',                'url' => 'admin/reportes/asistencia',     'icon' => 'fas fa-clipboard-check'],
+            ],
         ],
 
-        // Sidebar items:
+        // ── DOCENTE ──────────────────────────────────────────────────
+        ['header' => 'DOCENTE', 'can' => 'teacher'],
         [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'text' => 'Inicio',
+            'url'  => 'teacher/dashboard',
+            'icon' => 'fas fa-home',
+            'can'  => 'teacher',
         ],
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+            'text' => 'Asistencia',
+            'url'  => 'teacher/asistencia',
+            'icon' => 'fas fa-clipboard-check',
+            'can'  => 'teacher',
         ],
-        ['header' => 'TAREAS'],
+
+        // ── ESTUDIANTE ───────────────────────────────────────────────
+        ['header' => 'MI CUENTA', 'can' => 'student'],
         [
-            'text' => 'Tareas',
-            'icon' => 'fas fa-tasks',
-            'submenu' => [
-                [
-                    'text' => 'Crear Tarea',
-                    'url'  => 'crear_tareas',
-                    'icon' => 'fas fa-pencil-alt',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Calificar Tareas',
-                    'url'  => 'calificar_tareas',
-                    'icon' => 'fas fa-star',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Listado de Tareas',
-                    'url'  => 'listado_tareas',
-                    'icon' => 'fas fa-clipboard-list',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-            ],
+            'text' => 'Inicio',
+            'url'  => 'student/dashboard',
+            'icon' => 'fas fa-home',
+            'can'  => 'student',
         ],
-        ['header' => 'PERSONAL'],
         [
-            'text' => 'Personal',
-            'icon' => 'fas fa-users-cog',
-            'submenu' => [
-                [
-                    'text' => 'Estudiantes',
-                    'url'  => 'estudiantes',
-                    'icon' => 'fas fa-user-graduate',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Profesores',
-                    'url'  => 'profesores',
-                    'icon' => 'fas fa-chalkboard-teacher',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Asignar Profesores',
-                    'url'  => 'asigna_profesores',
-                    'icon' => 'fas fa-book-open',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-            ],
+            'text' => 'Mis Materias',
+            'url'  => 'student/materias',
+            'icon' => 'fas fa-book-open',
+            'can'  => 'student',
         ],
-        ['header' => 'CONFIGURACIONES'],
         [
-            'text' => 'Configuraciones',
-            'icon' => 'fas fa-cog',
-            'submenu' => [
-                [
-                    'text' => 'Materias',
-                    'url'  => 'materias',
-                    'icon' => 'fas fa-book',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Asociar Grado y Sección',
-                    'url'  => 'asocia',
-                    'icon' => 'fa fa-school',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Grados',
-                    'url'  => 'grados',
-                    'icon' => 'fas fa-graduation-cap',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-                [
-                    'text' => 'Secciones',
-                    'url'  => 'secciones',
-                    'icon' => 'fas fa-chalkboard-teacher',
-                    'icon_color' => 'info', // Icono de color azul claro
-                ],
-            ],
+            'text' => 'Mis Notas',
+            'url'  => 'student/calificaciones',
+            'icon' => 'fas fa-chart-bar',
+            'can'  => 'student',
+        ],
+        [
+            'text' => 'Mi Asistencia',
+            'url'  => 'student/asistencia',
+            'icon' => 'fas fa-calendar-check',
+            'can'  => 'student',
         ],
     ],
 
@@ -479,12 +465,17 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css',
                 ],
             ],
         ],

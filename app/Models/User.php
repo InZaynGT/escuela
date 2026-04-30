@@ -12,6 +12,44 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+
+    public function profesor()
+    {
+        return $this->hasOne(Profesor::class, 'id_usuario');
+    }
+
+    public function estudiante()
+    {
+        return $this->hasOne(Estudiante::class, 'id_usuario');
+    }
+
+    public function isAdmin()
+    {
+        return $this->rol === 'admin';
+    }
+
+    public function isTeacher()
+    {
+        return $this->rol === 'docente';
+    }
+
+    public function isStudent()
+    {
+        return $this->rol === 'estudiante';
+    }
+
+    // Método para obtener el nombre según el rol
+    public function getRolNombreAttribute()
+    {
+        $roles = [
+            'admin' => 'Administrador',
+            'docente' => 'Docente',
+            'estudiante' => 'Estudiante'
+        ];
+
+        return $roles[$this->rol];
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +59,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'rol',
     ];
 
     /**
