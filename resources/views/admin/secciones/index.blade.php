@@ -3,7 +3,12 @@
 @section('title', 'Secciones')
 
 @section('content_header')
-    <h1>Secciones</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Secciones</h1>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Panel
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -50,7 +55,7 @@
                 <div class="p-3">{{ $secciones->links() }}</div>
             @else
                 <div class="p-3">
-                    <div class="alert alert-info mb-0">No hay secciones registradas. ¡Crea la primera!</div>
+                    <div class="alert alert-secondary mb-0">No hay secciones registradas. ¡Crea la primera!</div>
                 </div>
             @endif
         </div>

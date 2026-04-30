@@ -76,10 +76,18 @@ class ResponsableController extends Controller
     public function asignar($id)
     {
         $responsable = Responsable::with('estudiantes')->findOrFail($id);
-        $estudiantes = Estudiante::orderBy('apellidos')->get();
         $asignados   = $responsable->estudiantes->pluck('id')->toArray();
 
-        return view('admin.responsables.asignar', compact('responsable', 'estudiantes', 'asignados'));
+        $gradoSecciones = \App\Models\GradoSeccion::with('grado', 'seccion')
+            ->get()->sortBy(fn($gs) => $gs->grado->id);
+
+        $estudiantes = Estudiante::with([
+            'inscripciones' => fn($q) => $q->where('anio', date('Y'))
+                ->where('estado', 'activo')
+                ->with('gradoSeccion.grado', 'gradoSeccion.seccion'),
+        ])->orderBy('apellidos')->get();
+
+        return view('admin.responsables.asignar', compact('responsable', 'estudiantes', 'asignados', 'gradoSecciones'));
     }
 
     public function guardarAsignacion(Request $request, $id)

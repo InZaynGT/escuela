@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Periodo;
+use App\Models\Tarea;
 use App\Models\TareaEstudiante;
 
 class CalificacionController extends Controller
@@ -26,51 +28,51 @@ class CalificacionController extends Controller
         if (!$inscripcion) {
             return view('student.calificaciones.index', [
                 'resumen'     => collect(),
+                'periodos'    => collect(),
                 'inscripcion' => null,
             ]);
         }
 
-        $materias = $inscripcion->gradoSeccion->materias()->with('tareas')->get();
+        $periodos = Periodo::where('anio', date('Y'))->orderBy('id')->get();
+        $materias = $inscripcion->gradoSeccion->materias()->get();
 
-        $resumen = $materias->map(function ($materia) use ($estudiante) {
-            $tareas = $materia->tareas;
-
-            if ($tareas->isEmpty()) {
-                return [
-                    'materia'   => $materia,
-                    'tareas'    => collect(),
-                    'promedio'  => null,
-                    'aprobado'  => null,
-                ];
-            }
+        $resumen = $materias->map(function ($materia) use ($estudiante, $periodos) {
+            $tareaIds = Tarea::where('id_materia', $materia->id)->pluck('id');
 
             $calificaciones = TareaEstudiante::where('id_estudiante', $estudiante->id)
-                ->whereIn('id_tarea', $tareas->pluck('id'))
+                ->whereIn('id_tarea', $tareaIds)
                 ->where('calificado', 1)
                 ->get()
                 ->keyBy('id_tarea');
 
-            $tareaDetalle = $tareas->map(function ($tarea) use ($calificaciones) {
-                $cal = $calificaciones[$tarea->id] ?? null;
-                return [
-                    'tarea'        => $tarea,
-                    'calificacion' => $cal,
-                ];
-            });
+            $porPeriodo = [];
+            foreach ($periodos as $periodo) {
+                $tareasPeriodo = Tarea::where('id_materia', $materia->id)
+                    ->where('id_periodo', $periodo->id)
+                    ->get();
 
-            $calificadasConNota = $calificaciones->values();
-            $promedio = $calificadasConNota->isNotEmpty()
-                ? round($calificadasConNota->avg('calificacion'), 2)
+                $max       = $tareasPeriodo->sum('ponderacion');
+                $ganado    = $tareasPeriodo->sum(fn($t) => $calificaciones[$t->id]->calificacion ?? 0);
+                $tieneNota = $tareasPeriodo->contains(fn($t) => isset($calificaciones[$t->id]));
+
+                $porPeriodo[$periodo->id] = [
+                    'max'    => $max,
+                    'ganado' => $tieneNota ? round($ganado, 1) : null,
+                ];
+            }
+
+            $tieneAlguna = collect($porPeriodo)->contains(fn($p) => $p['ganado'] !== null);
+            $total = $tieneAlguna
+                ? round(collect($porPeriodo)->sum(fn($p) => ($p['ganado'] ?? 0) / 4), 1)
                 : null;
 
             return [
-                'materia'  => $materia,
-                'tareas'   => $tareaDetalle,
-                'promedio' => $promedio,
-                'aprobado' => $promedio !== null ? ($promedio >= 60) : null,
+                'materia'    => $materia,
+                'porPeriodo' => $porPeriodo,
+                'total'      => $total,
             ];
         });
 
-        return view('student.calificaciones.index', compact('resumen', 'inscripcion'));
+        return view('student.calificaciones.index', compact('resumen', 'inscripcion', 'periodos'));
     }
 }

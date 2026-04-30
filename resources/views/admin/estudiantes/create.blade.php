@@ -3,7 +3,12 @@
 @section('title', 'Nuevo Estudiante')
 
 @section('content_header')
-    <h1>Nuevo Estudiante</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Nuevo Estudiante</h1>
+        <a href="{{ route('admin.estudiantes.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -50,16 +55,18 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="cui">CUI (Cédula)</label>
+                            <label for="cui">CUI *</label>
                             <input type="text"
                                    name="cui"
                                    id="cui"
                                    class="form-control @error('cui') is-invalid @enderror"
                                    value="{{ old('cui') }}"
-                                   placeholder="Ej: 1234567890123">
+                                   placeholder="Ej: 1234567890123"
+                                   required>
                             @error('cui')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
+                            <small class="text-muted">Se usará como usuario y contraseña de acceso.</small>
                         </div>
                     </div>
 
@@ -88,21 +95,6 @@
                                    class="form-control @error('fecha_nacimiento') is-invalid @enderror"
                                    value="{{ old('fecha_nacimiento') }}">
                             @error('fecha_nacimiento')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="email">Email (para usuario)</label>
-                            <input type="email"
-                                   name="email"
-                                   id="email"
-                                   class="form-control @error('email') is-invalid @enderror"
-                                   value="{{ old('email') }}"
-                                   placeholder="Ej: estudiante@escuela.com">
-                            @error('email')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>

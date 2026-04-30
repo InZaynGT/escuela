@@ -57,11 +57,23 @@ class PeriodoController extends Controller
             ->with('success', 'Periodo actualizado exitosamente.');
     }
     
+    public function toggleBloqueo($id)
+    {
+        $periodo = Periodo::findOrFail($id);
+        $periodo->update(['bloqueado' => !$periodo->bloqueado]);
+
+        $msg = $periodo->bloqueado
+            ? "El período \"{$periodo->nombre}\" fue bloqueado. Ya no se pueden crear ni editar tareas ni calificaciones."
+            : "El período \"{$periodo->nombre}\" fue desbloqueado.";
+
+        return redirect()->route('admin.periodos.index')->with('success', $msg);
+    }
+
     public function destroy($id)
     {
         $periodo = Periodo::findOrFail($id);
         $periodo->delete();
-        
+
         return redirect()->route('admin.periodos.index')
             ->with('success', 'Periodo eliminado exitosamente.');
     }

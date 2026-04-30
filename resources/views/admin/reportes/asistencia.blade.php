@@ -3,7 +3,12 @@
 @section('title', 'Reporte de Asistencia')
 
 @section('content_header')
-    <h1>Reporte de Asistencia</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Reporte de Asistencia</h1>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Panel
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -41,14 +46,15 @@
             {{ $seleccionado->grado->nombre ?? '' }} — {{ $seleccionado->seccion->nombre ?? '' }}
             <small class="text-muted">Año {{ $anio }}</small>
         </span>
-        <button onclick="window.print()" class="btn btn-sm btn-secondary no-print">
-            <i class="fas fa-print"></i> Imprimir
-        </button>
+        <a href="{{ route('admin.reportes.asistencia.print', ['id_grado_seccion' => $idGradoSeccion, 'anio' => $anio]) }}"
+           class="btn btn-sm btn-dark no-print" target="_blank">
+            <i class="fas fa-print"></i> Imprimir / Guardar PDF
+        </a>
     </div>
     <div class="card-body p-0">
         @if($resumen->isEmpty())
             <div class="p-3">
-                <div class="alert alert-info mb-0">No hay estudiantes inscritos.</div>
+                <div class="alert alert-secondary mb-0">No hay estudiantes inscritos.</div>
             </div>
         @else
         <table class="table table-bordered mb-0">

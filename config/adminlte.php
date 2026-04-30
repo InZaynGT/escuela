@@ -308,7 +308,7 @@ return [
                 ['text' => 'Grados',              'url' => 'admin/grados',        'icon' => 'fas fa-layer-group'],
                 ['text' => 'Secciones',           'url' => 'admin/secciones',     'icon' => 'fas fa-list'],
                 ['text' => 'Materias',            'url' => 'admin/materias',      'icon' => 'fas fa-book'],
-                ['text' => 'Periodos',            'url' => 'admin/periodos',      'icon' => 'fas fa-calendar-alt'],
+                ['text' => 'Unidades',            'url' => 'admin/periodos',      'icon' => 'fas fa-calendar-alt'],
             ],
         ],
         [
@@ -339,6 +339,20 @@ return [
                 ['text' => 'Boleta de Notas',           'url' => 'admin/reportes/boletas',        'icon' => 'fas fa-file-invoice'],
                 ['text' => 'Asistencia',                'url' => 'admin/reportes/asistencia',     'icon' => 'fas fa-clipboard-check'],
             ],
+        ],
+
+        [
+            'text' => 'Bitácora',
+            'url'  => 'admin/bitacora',
+            'icon' => 'fas fa-history',
+            'can'  => 'admin',
+        ],
+
+        [
+            'text' => 'Configuración',
+            'url'  => 'admin/configuracion',
+            'icon' => 'fas fa-cog',
+            'can'  => 'admin',
         ],
 
         // ── DOCENTE ──────────────────────────────────────────────────

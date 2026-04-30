@@ -11,7 +11,7 @@ class GradoController extends Controller
 
     public function index()
     {
-        $grados = Grado::orderBy('nombre')->paginate(50);
+        $grados = Grado::orderBy('id')->paginate(50);
         return view('admin.grados.index', compact('grados'));
     }
     

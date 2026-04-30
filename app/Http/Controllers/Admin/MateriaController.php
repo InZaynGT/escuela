@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Grado;
 use App\Models\Materia;
 use App\Models\GradoSeccion;
 use Illuminate\Http\Request;
@@ -11,10 +12,12 @@ class MateriaController extends Controller
 {
     public function index()
     {
-        $materias = Materia::with(['gradoSeccion.grado', 'gradoSeccion.seccion'])
-            ->orderBy('nombre')
-            ->paginate(50);
-        return view('admin.materias.index', compact('materias'));
+        $grados = Grado::with([
+            'gradoSecciones.seccion',
+            'gradoSecciones.materias',
+        ])->orderBy('id')->get();
+
+        return view('admin.materias.index', compact('grados'));
     }
     
     public function create()

@@ -3,7 +3,12 @@
 @section('title', 'Inscribir Estudiante')
 
 @section('content_header')
-    <h1>Inscribir Estudiante</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Inscribir Estudiante</h1>
+        <a href="{{ route('admin.estudiantes.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')

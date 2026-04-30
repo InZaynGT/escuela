@@ -4,12 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Estudiante extends Model
 {
     use HasFactory;
+    use \App\Traits\HasAuditTrail;
+    use LogsActivity;
 
     protected $table = 'estudiantes';
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('Estudiantes')
+            ->logOnly(['nombre', 'apellidos', 'cui', 'telefono', 'fecha_nacimiento'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'id_usuario',
@@ -20,6 +33,8 @@ class Estudiante extends Model
         'foto',
         'telefono',
         'fecha_nacimiento',
+        'created_by',
+        'updated_by',
     ];
 
     public function user()

@@ -11,6 +11,8 @@ class CalificacionFinal extends Model
 
     protected $table = 'calificaciones_finales';
 
+    use \App\Traits\HasAuditTrail;
+
     protected $fillable = [
         'id_estudiante',
         'id_materia',
@@ -18,6 +20,8 @@ class CalificacionFinal extends Model
         'anio',
         'promedio',
         'estado',
+        'created_by',
+        'updated_by',
     ];
 
     public function estudiante()

@@ -3,7 +3,12 @@
 @section('title', 'Grado-Sección')
 
 @section('content_header')
-    <h1>Combinaciones Grado-Sección</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Combinaciones Grado-Sección</h1>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Panel
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -49,7 +54,7 @@
                 <div class="p-3">{{ $combinaciones->links() }}</div>
             @else
                 <div class="p-3">
-                    <div class="alert alert-info mb-0">No hay combinaciones registradas. ¡Crea la primera!</div>
+                    <div class="alert alert-secondary mb-0">No hay combinaciones registradas. ¡Crea la primera!</div>
                 </div>
             @endif
         </div>

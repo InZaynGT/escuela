@@ -9,7 +9,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 // Ruta de fallback: redirige según el rol del usuario
 Route::get('/dashboard', function () {
@@ -55,6 +55,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/estudiantes', [App\Http\Controllers\Admin\EstudianteController::class, 'index'])->name('estudiantes.index');
     Route::get('/estudiantes/create', [App\Http\Controllers\Admin\EstudianteController::class, 'create'])->name('estudiantes.create');
+    Route::post('/estudiantes/generar-cuentas', [App\Http\Controllers\Admin\EstudianteController::class, 'generarCuentas'])->name('estudiantes.generar-cuentas');
+    Route::get('/estudiantes/importar', [App\Http\Controllers\Admin\EstudianteController::class, 'importarForm'])->name('estudiantes.importar');
+    Route::post('/estudiantes/importar', [App\Http\Controllers\Admin\EstudianteController::class, 'importar'])->name('estudiantes.importar.store');
+    Route::get('/estudiantes/plantilla', [App\Http\Controllers\Admin\EstudianteController::class, 'descargarPlantilla'])->name('estudiantes.plantilla');
     Route::post('/estudiantes', [App\Http\Controllers\Admin\EstudianteController::class, 'store'])->name('estudiantes.store');
     Route::get('/estudiantes/{id}/edit', [App\Http\Controllers\Admin\EstudianteController::class, 'edit'])->name('estudiantes.edit');
     Route::put('/estudiantes/{id}', [App\Http\Controllers\Admin\EstudianteController::class, 'update'])->name('estudiantes.update');
@@ -68,6 +72,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/periodos/{id}/edit', [App\Http\Controllers\Admin\PeriodoController::class, 'edit'])->name('periodos.edit');
     Route::put('/periodos/{id}', [App\Http\Controllers\Admin\PeriodoController::class, 'update'])->name('periodos.update');
     Route::delete('/periodos/{id}', [App\Http\Controllers\Admin\PeriodoController::class, 'destroy'])->name('periodos.destroy');
+    Route::patch('/periodos/{id}/toggle-bloqueo', [App\Http\Controllers\Admin\PeriodoController::class, 'toggleBloqueo'])->name('periodos.toggle-bloqueo');
 
     // Responsables
     Route::get('/responsables', [App\Http\Controllers\Admin\ResponsableController::class, 'index'])->name('responsables.index');
@@ -82,12 +87,34 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Reportes
     Route::get('/reportes/grado-seccion', [App\Http\Controllers\Admin\ReporteController::class, 'gradoSeccion'])->name('reportes.grado-seccion');
     Route::get('/reportes/boletas', [App\Http\Controllers\Admin\ReporteController::class, 'boletas'])->name('reportes.boletas');
+    Route::get('/reportes/boletas/print-all', [App\Http\Controllers\Admin\ReporteController::class, 'boletasPrintAll'])->name('reportes.boletas.print-all');
+    Route::get('/reportes/boletas/{id}/print', [App\Http\Controllers\Admin\ReporteController::class, 'boletaPrint'])->name('reportes.boletas.print');
     Route::get('/reportes/asistencia', [App\Http\Controllers\Admin\ReporteController::class, 'asistencia'])->name('reportes.asistencia');
+    Route::get('/reportes/asistencia/print', [App\Http\Controllers\Admin\ReporteController::class, 'asistenciaPrint'])->name('reportes.asistencia.print');
+
+    // Bitácora
+    Route::get('/bitacora', [App\Http\Controllers\Admin\BitacoraController::class, 'index'])->name('bitacora.index');
+
+    // Configuración del sistema
+    Route::get('/configuracion', [App\Http\Controllers\Admin\ConfiguracionController::class, 'index'])->name('configuracion.index');
+    Route::put('/configuracion', [App\Http\Controllers\Admin\ConfiguracionController::class, 'update'])->name('configuracion.update');
+
+    // API interna: estudiantes filtrados por grado/sección
+    Route::get('/api/estudiantes', [App\Http\Controllers\Admin\EstudianteController::class, 'apiListar'])->name('api.estudiantes');
+
+    // Cuenta de acceso (usuario) de estudiantes y profesores
+    Route::get('/estudiantes/{id}/cuenta', [App\Http\Controllers\Admin\EstudianteController::class, 'cuenta'])->name('estudiantes.cuenta');
+    Route::put('/estudiantes/{id}/cuenta', [App\Http\Controllers\Admin\EstudianteController::class, 'actualizarCuenta'])->name('estudiantes.cuenta.update');
+    Route::get('/profesores/{id}/cuenta', [App\Http\Controllers\Admin\ProfesorController::class, 'cuenta'])->name('profesores.cuenta');
+    Route::put('/profesores/{id}/cuenta', [App\Http\Controllers\Admin\ProfesorController::class, 'actualizarCuenta'])->name('profesores.cuenta.update');
 });
 
 // RUTAS DE TEACHER
 Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Teacher\DashboardController::class, 'index'])->name('dashboard');
+
+    // Vista de periodos de una materia
+    Route::get('/materias/{idMateria}', [App\Http\Controllers\Teacher\TareaController::class, 'show'])->name('materias.show');
 
     // Tareas
     Route::get('/materias/{idMateria}/tareas', [App\Http\Controllers\Teacher\TareaController::class, 'index'])->name('tareas.index');
@@ -101,10 +128,10 @@ Route::middleware(['auth', 'teacher'])->prefix('teacher')->name('teacher.')->gro
     Route::get('/materias/{idMateria}/calificaciones', [App\Http\Controllers\Teacher\CalificacionController::class, 'index'])->name('calificaciones.index');
     Route::post('/materias/{idMateria}/calificaciones', [App\Http\Controllers\Teacher\CalificacionController::class, 'store'])->name('calificaciones.store');
 
-    // Asistencia
+    // Asistencia (por grado-sección, no por materia)
     Route::get('/asistencia', [App\Http\Controllers\Teacher\AsistenciaController::class, 'index'])->name('asistencia.index');
-    Route::get('/asistencia/{idMateria}', [App\Http\Controllers\Teacher\AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
-    Route::post('/asistencia/{idMateria}', [App\Http\Controllers\Teacher\AsistenciaController::class, 'guardar'])->name('asistencia.guardar');
+    Route::get('/asistencia/{idGradoSeccion}', [App\Http\Controllers\Teacher\AsistenciaController::class, 'registrar'])->name('asistencia.registrar');
+    Route::post('/asistencia/{idGradoSeccion}', [App\Http\Controllers\Teacher\AsistenciaController::class, 'guardar'])->name('asistencia.guardar');
 });
 
 // RUTAS DE STUDENT

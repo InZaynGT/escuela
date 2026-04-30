@@ -3,7 +3,12 @@
 @section('title', 'Grados')
 
 @section('content_header')
-    <h1>Grados</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Grados</h1>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Panel
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -50,7 +55,7 @@
                 <div class="p-3">{{ $grados->links() }}</div>
             @else
                 <div class="p-3">
-                    <div class="alert alert-info mb-0">
+                    <div class="alert alert-secondary mb-0">
                         <i class="fas fa-info-circle"></i> No hay grados registrados. ¡Crea el primero!
                     </div>
                 </div>

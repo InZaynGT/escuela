@@ -17,16 +17,30 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    protected function credentials(Request $request): array
+    {
+        $input = trim($request->get($this->username(), ''));
+        // Si no tiene @ es un CUI de estudiante → convertir al formato interno
+        $email = str_contains($input, '@') ? $input : $input . '@eorm.local';
+
+        return [$this->username() => $email, 'password' => $request->get('password')];
+    }
+
     protected function authenticated(Request $request, $user)
     {
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->isTeacher()) {
-            return redirect()->route('teacher.dashboard');
-        } elseif ($user->isStudent()) {
-            return redirect()->route('student.dashboard');
-        }
-        
-        return redirect('/dashboard');
+        activity('Accesos')
+            ->causedBy($user)
+            ->withProperties(['ip' => $request->ip(), 'rol' => $user->rol])
+            ->log('Inicio de sesión');
+
+        $rutas = [
+            'admin'      => 'admin.dashboard',
+            'docente'    => 'teacher.dashboard',
+            'estudiante' => 'student.dashboard',
+        ];
+
+        $ruta = $rutas[$user->rol] ?? null;
+
+        return $ruta ? redirect()->route($ruta) : redirect('/dashboard');
     }
 }

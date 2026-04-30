@@ -9,7 +9,7 @@
 @section('content')
 
 @if($stats['periodo_activo'])
-<div class="alert alert-info">
+<div class="alert alert-secondary">
     <i class="fas fa-calendar-alt"></i>
     Periodo activo: <strong>{{ $stats['periodo_activo']->nombre }}</strong>
     ({{ \Carbon\Carbon::parse($stats['periodo_activo']->fecha_inicio)->format('d/m/Y') }}
@@ -99,7 +99,7 @@
                     <i class="fas fa-school"></i> Grados y secciones
                 </a>
                 <a href="{{ route('admin.periodos.index') }}" class="btn btn-sm btn-secondary mb-1">
-                    <i class="fas fa-calendar-alt"></i> Periodos
+                    <i class="fas fa-calendar-alt"></i> Unidades
                 </a>
                 <a href="{{ route('admin.reportes.asistencia') }}" class="btn btn-sm btn-secondary mb-1">
                     <i class="fas fa-clipboard-check"></i> Reporte asistencia

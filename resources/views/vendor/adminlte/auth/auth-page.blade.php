@@ -1,12 +1,14 @@
 @extends('adminlte::master')
 
-@php( $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home') )
+@php
+    $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home');
+    $dashboard_url = config('adminlte.use_route_url', false)
+        ? ($dashboard_url ? route($dashboard_url) : '')
+        : ($dashboard_url ? url($dashboard_url) : '');
 
-@if (config('adminlte.use_route_url', false))
-    @php( $dashboard_url = $dashboard_url ? route($dashboard_url) : '' )
-@else
-    @php( $dashboard_url = $dashboard_url ? url($dashboard_url) : '' )
-@endif
+    $logoImg      = \App\Models\Configuracion::get('logo_img');
+    $nombreCentro = \App\Models\Configuracion::get('nombre_centro', config('adminlte.logo', '<b>LAS</b> EORM'));
+@endphp
 
 @section('adminlte_css')
     @stack('css')
@@ -21,28 +23,11 @@
         {{-- Logo --}}
         <div class="{{ $auth_type ?? 'login' }}-logo">
             <a href="{{ $dashboard_url }}">
-
-                {{-- Logo Image --}}
-                @if (config('adminlte.auth_logo.enabled', false))
-                    <img src="{{ asset(config('adminlte.auth_logo.img.path')) }}"
-                         alt="{{ config('adminlte.auth_logo.img.alt') }}"
-                         @if (config('adminlte.auth_logo.img.class', null))
-                            class="{{ config('adminlte.auth_logo.img.class') }}"
-                         @endif
-                         @if (config('adminlte.auth_logo.img.width', null))
-                            width="{{ config('adminlte.auth_logo.img.width') }}"
-                         @endif
-                         @if (config('adminlte.auth_logo.img.height', null))
-                            height="{{ config('adminlte.auth_logo.img.height') }}"
-                         @endif>
-                @else
-                    <img src="{{ asset(config('adminlte.logo_img')) }}"
-                         alt="{{ config('adminlte.logo_img_alt') }}" height="50">
+                @if($logoImg)
+                    <img src="{{ asset($logoImg) }}" alt="{{ strip_tags($nombreCentro) }}"
+                         style="max-height:55px; width:auto; margin-bottom:4px; display:block; margin-inline:auto;">
                 @endif
-
-                {{-- Logo Label --}}
-                {!! config('adminlte.logo', '<b>Admin</b>LTE') !!}
-
+                <span>{!! $nombreCentro !!}</span>
             </a>
         </div>
 

@@ -3,7 +3,12 @@
 @section('title', 'Nuevo Periodo')
 
 @section('content_header')
-    <h1>Nuevo Periodo Académico</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Nuevo Periodo Académico</h1>
+        <a href="{{ route('admin.periodos.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -24,7 +29,7 @@
                                    id="nombre"
                                    class="form-control @error('nombre') is-invalid @enderror"
                                    value="{{ old('nombre') }}"
-                                   placeholder="Ej: Primer Bimestre, Segundo Bimestre, Primer Trimestre"
+                                   placeholder="Ej: Primer Unidad, Segundo Unidad, Primer Trimestre"
                                    required>
                             @error('nombre')
                                 <span class="invalid-feedback">{{ $message }}</span>

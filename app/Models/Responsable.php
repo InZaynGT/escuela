@@ -11,11 +11,15 @@ class Responsable extends Model
 
     protected $table = 'responsables';
 
+    use \App\Traits\HasAuditTrail;
+
     protected $fillable = [
         'nombre',
         'apellidos',
         'telefono',
         'parentesco',
+        'created_by',
+        'updated_by',
     ];
 
     public function estudiantes()

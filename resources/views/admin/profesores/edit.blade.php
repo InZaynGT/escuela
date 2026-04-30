@@ -3,7 +3,12 @@
 @section('title', 'Editar Profesor')
 
 @section('content_header')
-    <h1>Editar Profesor</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Editar Profesor</h1>
+        <a href="{{ route('admin.profesores.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -64,6 +69,10 @@
                     <button type="submit" class="btn btn-dark btn-sm">
                         <i class="fas fa-save"></i> Actualizar
                     </button>
+                    <a href="{{ route('admin.profesores.cuenta', $profesor->id) }}" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-key"></i>
+                        {{ $profesor->user ? 'Gestionar cuenta' : 'Crear cuenta de acceso' }}
+                    </a>
                     <a href="{{ route('admin.profesores.index') }}" class="btn btn-secondary btn-sm">
                         <i class="fas fa-arrow-left"></i> Cancelar
                     </a>

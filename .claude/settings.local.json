@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($phpExe = \"C:\\\\xampp\\\\php\\\\php.exe\"; $composerUrl = \"https://getcomposer.org/composer-stable.phar\"; Invoke-WebRequest -Uri $composerUrl -OutFile \"C:\\\\xampp\\\\htdocs\\\\escuela\\\\composer.phar\" -UseBasicParsing; & $phpExe \"C:\\\\xampp\\\\htdocs\\\\escuela\\\\composer.phar\" --version)",
+      "Bash(php artisan *)",
+      "Bash(composer remove *)",
+      "Bash(php c:/xampp/htdocs/escuela/artisan route:list --columns=method,uri,name,middleware)",
+      "Bash(php c:/xampp/htdocs/escuela/artisan route:list --name=register)",
+      "Bash(git checkout *)",
+      "PowerShell(icacls \"C:\\\\xampp\\\\htdocs\\\\escuela\")",
+      "PowerShell(icacls \"C:\\\\xampp\\\\htdocs\\\\escuela\" /grant \"Usuarios autentificados:\\(W\\)\" 2>&1)",
+      "PowerShell(icacls \"C:\\\\xampp\\\\htdocs\\\\escuela\" /grant \"${env:USERNAME}:\\(M\\)\" 2>&1)",
+      "PowerShell(cmd /c \"dir /a C:\\\\xampp\\\\htdocs\\\\escuela\\\\server.php 2>&1\")",
+      "PowerShell(cmd /c \"dir /a C:\\\\xampp\\\\htdocs\\\\escuela\\\\ | findstr server\")",
+      "Bash(php composer.phar require spatie/laravel-activitylog)",
+      "Bash(php composer.phar require spatie/laravel-activitylog --ignore-platform-req=ext-gd)"
+    ]
+  }
+}

@@ -10,7 +10,7 @@ class SeccionController extends Controller
 {
     public function index()
     {
-        $secciones = Seccion::orderBy('nombre')->paginate(50);
+        $secciones = Seccion::orderBy('id')->paginate(50);
         return view('admin.secciones.index', compact('secciones'));
     }
     

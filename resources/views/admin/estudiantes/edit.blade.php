@@ -3,7 +3,12 @@
 @section('title', 'Editar Estudiante')
 
 @section('content_header')
-    <h1>Editar Estudiante</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Editar Estudiante</h1>
+        <a href="{{ route('admin.estudiantes.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -51,15 +56,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="cui">CUI (Cédula)</label>
+                            <label for="cui">CUI *</label>
                             <input type="text"
                                    name="cui"
                                    id="cui"
                                    class="form-control @error('cui') is-invalid @enderror"
-                                   value="{{ old('cui', $estudiante->cui) }}">
+                                   value="{{ old('cui', $estudiante->cui) }}"
+                                   required>
                             @error('cui')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
+                            <small class="text-muted">Es el usuario y contraseña de acceso del estudiante.</small>
                         </div>
                     </div>
 
@@ -98,6 +105,10 @@
                     <button type="submit" class="btn btn-dark btn-sm">
                         <i class="fas fa-save"></i> Actualizar
                     </button>
+                    <a href="{{ route('admin.estudiantes.cuenta', $estudiante->id) }}" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-key"></i>
+                        {{ $estudiante->user ? 'Gestionar cuenta' : 'Crear cuenta de acceso' }}
+                    </a>
                     <a href="{{ route('admin.estudiantes.index') }}" class="btn btn-secondary btn-sm">
                         <i class="fas fa-arrow-left"></i> Cancelar
                     </a>

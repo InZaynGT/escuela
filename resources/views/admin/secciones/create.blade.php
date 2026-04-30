@@ -3,7 +3,12 @@
 @section('title', 'Nueva Sección')
 
 @section('content_header')
-    <h1>Nueva Sección</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Nueva Sección</h1>
+        <a href="{{ route('admin.secciones.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -80,4 +81,39 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Genera un email único del formato nombre.apellido[@N]@eorm.local
+     * basado en el primer nombre y primer apellido del estudiante.
+     */
+    public static function generarEmailEstudiante(string $nombre, string $apellidos): string
+    {
+        $n    = self::slugificar(explode(' ', trim($nombre))[0]);
+        $a    = self::slugificar(explode(' ', trim($apellidos))[0]);
+        $base = $n . '.' . $a;
+
+        $email = $base . '@eorm.local';
+        $i     = 2;
+        while (self::where('email', $email)->exists()) {
+            $email = $base . $i . '@eorm.local';
+            $i++;
+        }
+
+        return $email;
+    }
+
+    private static function slugificar(string $texto): string
+    {
+        $texto = mb_strtolower($texto, 'UTF-8');
+        $texto = strtr($texto, [
+            'á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ü'=>'u','ñ'=>'n',
+            'à'=>'a','è'=>'e','ì'=>'i','ò'=>'o','ù'=>'u',
+        ]);
+        return preg_replace('/[^a-z0-9]/', '', $texto);
+    }
 }

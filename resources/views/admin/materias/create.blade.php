@@ -3,7 +3,12 @@
 @section('title', 'Nueva Materia')
 
 @section('content_header')
-    <h1>Nueva Materia</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Nueva Materia</h1>
+        <a href="{{ route('admin.materias.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')
@@ -34,7 +39,7 @@
                     <select name="id_grado_seccion" id="id_grado_seccion" class="form-control" required>
                         <option value="">Seleccione un grado y sección</option>
                         @foreach($combinaciones as $combinacion)
-                            <option value="{{ $combinacion->id }}" {{ old('id_grado_seccion') == $combinacion->id ? 'selected' : '' }}>
+                            <option value="{{ $combinacion->id }}" {{ old('id_grado_seccion', request('id_grado_seccion')) == $combinacion->id ? 'selected' : '' }}>
                                 {{ $combinacion->grado->nombre }} - Sección {{ $combinacion->seccion->nombre }}
                             </option>
                         @endforeach

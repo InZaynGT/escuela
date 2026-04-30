@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class GradoSeccion extends Model
 {
 
-    protected $table = 'grado_seccion';
-    protected $fillable = ['id_grado','id_seccion'];
-
     use HasFactory;
+    use \App\Traits\HasAuditTrail;
+
+    protected $table = 'grado_seccion';
+    protected $fillable = ['id_grado', 'id_seccion', 'created_by', 'updated_by'];
     public function grado()
     {
         return $this->belongsTo(Grado::class, 'id_grado');

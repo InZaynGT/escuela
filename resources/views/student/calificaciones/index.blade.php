@@ -3,69 +3,75 @@
 @section('title', 'Mis Notas')
 
 @section('content_header')
-    <h1>Mis Notas</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Mis Notas</h1>
+        <a href="{{ route('student.dashboard') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Panel
+        </a>
+    </div>
 @stop
 
 @section('content')
 
 @if(!$inscripcion)
-    <div class="alert alert-info">No tienes una inscripción activa para este año.</div>
+    <div class="alert alert-secondary">No tienes una inscripción activa para este año.</div>
 @elseif($resumen->isEmpty())
-    <div class="alert alert-info">No hay materias registradas.</div>
+    <div class="alert alert-secondary">No hay materias registradas.</div>
 @else
 
-@foreach($resumen as $item)
-<div class="card mb-3">
-    <div class="card-header d-flex justify-content-between align-items-center flex-wrap" style="gap:.5rem;">
-        <span>{{ $item['materia']->nombre }}</span>
-        @if($item['promedio'] !== null)
-            @php $cls = $item['promedio'] >= 70 ? 'badge-success' : ($item['promedio'] >= 60 ? 'badge-warning' : 'badge-danger'); @endphp
-            <span class="badge {{ $cls }} text-white">
-                Promedio: {{ number_format($item['promedio'], 1) }}
-                — {{ $item['aprobado'] ? 'Aprobado' : 'Reprobado' }}
-            </span>
-        @else
-            <span class="badge badge-secondary text-white">Sin notas aún</span>
-        @endif
-    </div>
-    @if($item['tareas']->isNotEmpty())
+<div class="card">
+    <div class="card-header">Resumen de calificaciones {{ date('Y') }}</div>
     <div class="card-body p-0">
-        <table class="table table-sm table-bordered mb-0">
-            <thead>
+        <div class="table-responsive">
+        <table class="table table-bordered table-sm mb-0">
+            <thead class="thead-light">
                 <tr>
-                    <th>Tarea</th>
-                    <th>Ponderación</th>
-                    <th class="text-center">Nota</th>
-                    <th>Comentario del docente</th>
+                    <th>Materia</th>
+                    @foreach($periodos as $periodo)
+                        <th class="text-center">{{ $periodo->nombre }}</th>
+                    @endforeach
+                    <th class="text-center">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($item['tareas'] as $detalle)
-                @php $nota = $detalle['calificacion']?->calificacion ?? null; @endphp
+                @foreach($resumen as $item)
                 <tr>
-                    <td>{{ $detalle['tarea']->titulo }}</td>
-                    <td>{{ $detalle['tarea']->ponderacion }}%</td>
+                    <td>
+                        <a href="{{ route('student.materias.show', $item['materia']->id) }}">
+                            {{ $item['materia']->nombre }}
+                        </a>
+                    </td>
+                    @foreach($periodos as $periodo)
+                    @php $pp = $item['porPeriodo'][$periodo->id] ?? ['ganado' => null, 'max' => 0]; @endphp
                     <td class="text-center">
-                        @if($nota !== null)
-                            @php $cls = $nota >= 70 ? 'nota-alta' : ($nota >= 60 ? 'nota-media' : 'nota-baja'); @endphp
-                            <span class="{{ $cls }}">{{ number_format($nota, 1) }}</span>
+                        @if($pp['ganado'] !== null)
+                            @php $cls = $pp['ganado'] >= 70 ? 'nota-alta' : ($pp['ganado'] >= 60 ? 'nota-media' : 'nota-baja'); @endphp
+                            <span class="{{ $cls }}">{{ $pp['ganado'] }}</span>
+                            @if($pp['max'] > 0)
+                                <small class="text-muted">/ {{ $pp['max'] }}</small>
+                            @endif
+                        @elseif($pp['max'] > 0)
+                            <span class="text-muted">— / {{ $pp['max'] }}</span>
                         @else
                             <span class="text-muted">—</span>
                         @endif
                     </td>
-                    <td>
-                        <small class="text-muted">
-                            {{ $detalle['calificacion']?->observaciones ?? '—' }}
-                        </small>
+                    @endforeach
+                    <td class="text-center">
+                        @if($item['total'] !== null)
+                            @php $cls = $item['total'] >= 70 ? 'nota-alta' : ($item['total'] >= 60 ? 'nota-media' : 'nota-baja'); @endphp
+                            <strong class="{{ $cls }}">{{ $item['total'] }}</strong>
+                        @else
+                            <span class="text-muted">—</span>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
-    @endif
 </div>
-@endforeach
 
 @endif
 @stop

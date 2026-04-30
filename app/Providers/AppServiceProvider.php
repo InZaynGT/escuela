@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\GradoSeccion;
+use App\Observers\GradoSeccionObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+        GradoSeccion::observe(GradoSeccionObserver::class);
     }
 }

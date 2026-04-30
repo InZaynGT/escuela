@@ -3,7 +3,12 @@
 @section('title', 'Editar Responsable')
 
 @section('content_header')
-    <h1>Editar Responsable</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Editar Responsable</h1>
+        <a href="{{ route('admin.responsables.index') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
 @stop
 
 @section('content')

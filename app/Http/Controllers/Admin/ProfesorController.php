@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GradoSeccion;
 use App\Models\Profesor;
 use App\Models\User;
 use App\Models\Materia;
@@ -59,17 +60,52 @@ class ProfesorController extends Controller
     public function update(Request $request, $id)
     {
         $profesor = Profesor::findOrFail($id);
-        
+
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre'    => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'telefono' => 'nullable|string|max:20'
+            'telefono'  => 'nullable|string|max:20',
         ]);
-        
-        $profesor->update($request->all());
-        
+
+        $profesor->update($request->only(['nombre', 'apellidos', 'telefono']));
+
         return redirect()->route('admin.profesores.index')
             ->with('success', 'Profesor actualizado exitosamente.');
+    }
+
+    public function cuenta($id)
+    {
+        $profesor = Profesor::with('user')->findOrFail($id);
+        return view('admin.profesores.cuenta', compact('profesor'));
+    }
+
+    public function actualizarCuenta(Request $request, $id)
+    {
+        $profesor = Profesor::with('user')->findOrFail($id);
+
+        $request->validate([
+            'email'    => 'required|email|unique:users,email,' . ($profesor->id_usuario ?? 'NULL'),
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        if ($profesor->user) {
+            $datos = ['email' => $request->email, 'name' => $profesor->nombre_completo];
+            if ($request->filled('password')) {
+                $datos['password'] = bcrypt($request->password);
+            }
+            $profesor->user->update($datos);
+        } else {
+            $user = User::create([
+                'name'     => $profesor->nombre_completo,
+                'email'    => $request->email,
+                'password' => bcrypt($request->filled('password') ? $request->password : 'docente123'),
+                'rol'      => 'docente',
+            ]);
+            $profesor->update(['id_usuario' => $user->id]);
+        }
+
+        return redirect()->route('admin.profesores.cuenta', $id)
+            ->with('success', 'Cuenta actualizada correctamente.');
     }
     
     public function destroy($id)
@@ -90,10 +126,15 @@ class ProfesorController extends Controller
     public function asignar($id)
     {
         $profesor = Profesor::findOrFail($id);
-        $materias = Materia::with(['gradoSeccion.grado', 'gradoSeccion.seccion'])->get();
         $materiasAsignadas = $profesor->materias()->pluck('materias.id')->toArray();
-        
-        return view('admin.profesores.asignar', compact('profesor', 'materias', 'materiasAsignadas'));
+
+        $gradoSecciones = GradoSeccion::with([
+            'grado',
+            'seccion',
+            'materias.profesores',
+        ])->get()->sortBy(fn($gs) => ($gs->grado->id) . ($gs->seccion->nombre));
+
+        return view('admin.profesores.asignar', compact('profesor', 'gradoSecciones', 'materiasAsignadas'));
     }
     
     public function guardarAsignacion(Request $request, $id)
