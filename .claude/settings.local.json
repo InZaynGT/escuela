@@ -13,7 +13,9 @@
       "PowerShell(cmd /c \"dir /a C:\\\\xampp\\\\htdocs\\\\escuela\\\\server.php 2>&1\")",
       "PowerShell(cmd /c \"dir /a C:\\\\xampp\\\\htdocs\\\\escuela\\\\ | findstr server\")",
       "Bash(php composer.phar require spatie/laravel-activitylog)",
-      "Bash(php composer.phar require spatie/laravel-activitylog --ignore-platform-req=ext-gd)"
+      "Bash(php composer.phar require spatie/laravel-activitylog --ignore-platform-req=ext-gd)",
+      "WebSearch",
+      "WebFetch(domain:www.siteground.com)"
     ]
   }
 }
