@@ -1,0 +1,23 @@
+name: Deploy to SiteGround
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: gtxm1127.siteground.biz
+          username: u2393-2l39vyzc6vuzc
+          key: ${{ secrets.EORM }}
+          script: |
+            cd /home/customer/www/eorm.sheinboutique.com
+            git pull origin main
+            php composer.phar install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan view:cache
