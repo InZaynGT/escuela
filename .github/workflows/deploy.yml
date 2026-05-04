@@ -12,8 +12,9 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: gtxm1127.siteground.biz
-          username: u2393-2l39vyzc6vuzc
+          username: u2393-2l39vyz6vuzc
           key: ${{ secrets.EORM }}
+          port: 18765
           script: |
             cd /home/customer/www/eorm.sheinboutique.com
             git pull origin main
